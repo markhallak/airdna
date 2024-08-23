@@ -219,7 +219,7 @@ def getSTRListings(marketID):
         data = response.json()['payload']['listings']
         logging.info(f"{len(data)} properties from AirDNA")
 
-        csv_file = "properties.csv"
+        csv_file = "Carolina_Properties.csv"
 
         for property in data:
             if count > 200:
