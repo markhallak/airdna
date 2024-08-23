@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Real Estate Markets</title>
+  <link href="https://unpkg.com/tailwindcss@^2.2/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.4.0/flowbite.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .card-image {
+      background-position: center;
+      background-size: cover;
+      position: relative;
+    }
+    .card-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.1));
+    }
+    .card-content {
+      position: relative;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+<header class="bg-indigo-600 shadow">
+  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold leading-tight text-white">Real Estate Markets</h1>
+  </div>
+</header>
+<main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+  <div class="px-4 py-6 sm:px-0">
+    <div class="flex justify-between items-center mb-6">
+      <div class="relative w-full max-w-xs">
+        <input type="text" id="search"
+               class="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+               placeholder="Search for a market...">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+               fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.666 4.474l4.528 4.528a1 1 0 01-1.414 1.414l-4.528-4.528A6 6 0 012 8z"
+                  clip-rule="evenodd"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div id="market-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+      <!-- Market Cards Will Be Injected Here -->
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div id="info-modal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+      <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+          <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 sm:mx-0 sm:h-10 sm:w-10">
+            <svg class="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+            </svg>
+          </div>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-6" id="modal-title">Market Information</h3>
+            <div class="mt-2" id="modal-content" class="flex justify-center items-center">
+              <!-- Additional stats will be injected here -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.4.0/flowbite.min.js"></script>
+<script>
+  // Sample data for real estate markets
+  const markets = [
+    { name: 'New York', strListings: 1200000, submarkets: 20, forSale: 50000, imageUrl: 'https://images.unsplash.com/photo-1701145631194-a6be169697ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0MzgzMTN8MHwxfHNlYXJjaHwxfHxzYW4lMjBqdWFuJTJDJTIwcHJ8ZW58MHwwfHx8MTcxMjk1MDY2Nnww&ixlib=rb-4.0.3&q=100&w=800', info: { description: 'New York is known for its skyscrapers and vibrant city life.', stats: { strListings: 1200000, submarkets: 20, forSale: 50000 } } },
+    { name: 'Los Angeles', strListings: 800000, submarkets: 15, forSale: 40000, imageUrl: 'https://images.unsplash.com/photo-1701145631194-a6be169697ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0MzgzMTN8MHwxfHNlYXJjaHwxfHxzYW4lMjBqdWFuJTJDJTIwcHJ8ZW58MHwwfHx8MTcxMjk1MDY2Nnww&ixlib=rb-4.0.3&q=100&w=800', info: { description: 'Los Angeles is known for its Mediterranean climate and the entertainment industry.', stats: { strListings: 800000, submarkets: 15, forSale: 40000 } } },
+    { name: 'Chicago', strListings: 600000, submarkets: 10, forSale: 30000, imageUrl: 'https://images.unsplash.com/photo-1701145631194-a6be169697ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0MzgzMTN8MHwxfHNlYXJjaHwxfHxzYW4lMjBqdWFuJTJDJTIwcHJ8ZW58MHwwfHx8MTcxMjk1MDY2Nnww&ixlib=rb-4.0.3&q=100&w=800', info: { description: 'Chicago is known for its architectural marvels and deep-dish pizza.', stats: { strListings: 600000, submarkets: 10, forSale: 30000 } } },
+    { name: 'Houston', strListings: 400000, submarkets: 8, forSale: 20000, imageUrl: 'https://images.unsplash.com/photo-1701145631194-a6be169697ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0MzgzMTN8MHwxfHNlYXJjaHwxfHxzYW4lMjBqdWFuJTJDJTIwcHJ8ZW58MHwwfHx8MTcxMjk1MDY2Nnww&ixlib=rb-4.0.3&q=100&w=800', info: { description: 'Houston is known for its space exploration contributions and diverse food scene.', stats: { strListings: 400000, submarkets: 8, forSale: 20000 } } }
+  ];
+
+  // Function to format numbers with M and K
+  function formatNumber(num) {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'K';
+    }
+    return num;
+  }
+
+  // Function to create market cards with stats
+  function createMarketCard(market) {
+    const card = document.createElement('div');
+    card.classList.add('bg-white', 'rounded-lg', 'shadow', 'hover:shadow-xl', 'transition', 'duration-300', 'ease-in-out', 'w-[350px]', 'overflow-hidden', 'relative');
+    card.innerHTML = `
+      <div class="card-image h-32" style="background-image: url('${market.imageUrl}');">
+        <div class="card-overlay"></div>
+      </div>
+      <div class="p-4 card-content">
+        <h2 class="text-lg font-bold mb-2 text-indigo-600">${market.name}</h2>
+        <div class="grid grid-cols-3 gap-4">
+          <div class="text-center">
+            <p class="text-xl font-semibold text-indigo-600">${formatNumber(market.strListings)}</p>
+            <p class="text-gray-600 text-xs">STR Listings</p>
+          </div>
+          <div class="text-center">
+            <p class="text-xl font-semibold text-indigo-600">${market.submarkets}</p>
+            <p class="text-gray-600 text-xs">Submarkets</p>
+          </div>
+          <div class="text-center">
+            <p class="text-xl font-semibold text-indigo-600">${formatNumber(market.forSale)}</p>
+            <p class="text-gray-600 text-xs">For Sale</p>
+          </div>
+        </div>
+        <button class="absolute top-2 right-2 text-gray-400 hover:text-gray-600" onclick="openModal('${market.name}', '${market.info.description}', ${market.info.stats.strListings}, ${market.info.stats.submarkets}, ${market.info.stats.forSale})">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"></path>
+          </svg>
+        </button>
+      </div>
+    `;
+    return card;
+  }
+
+  // Function to display markets
+  function displayMarkets(markets) {
+    const marketGrid = document.getElementById('market-grid');
+    marketGrid.innerHTML = '';
+    markets.forEach(market => {
+      const card = createMarketCard(market);
+      marketGrid.appendChild(card);
+    });
+  }
+
+  // Display all markets initially
+  displayMarkets(markets);
+
+  // Search functionality
+  document.getElementById('search').addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    const filteredMarkets = markets.filter(market => market.name.toLowerCase().includes(query));
+    displayMarkets(filteredMarkets);
+  });
+
+  // Function to open modal
+  function openModal(title, description, strListings, submarkets, forSale) {
+    document.getElementById('modal-title').innerText = title;
+    document.getElementById('modal-content').innerHTML = `
+      <div class="grid grid-cols-3 gap-4 text-center mb-6">
+        <div>
+          <p class="text-2xl font-semibold text-indigo-600">${formatNumber(strListings)}</p>
+          <p class="text-gray-600 text-xs">STR Listings</p>
+        </div>
+        <div>
+          <p class="text-2xl font-semibold text-indigo-600">${submarkets}</p>
+          <p class="text-gray-600 text-xs">Submarkets</p>
+        </div>
+        <div>
+          <p class="text-2xl font-semibold text-indigo-600">${formatNumber(forSale)}</p>
+          <p class="text-gray-600 text-xs">For Sale</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-4 text-center mb-6">
+        <div>
+          <p class="text-2xl font-semibold text-indigo-600">${formatNumber(strListings)}</p>
+          <p class="text-gray-600 text-xs">STR Listings</p>
+        </div>
+        <div>
+          <p class="text-2xl font-semibold text-indigo-600">${submarkets}</p>
+          <p class="text-gray-600 text-xs">Submarkets</p>
+        </div>
+        <div>
+          <p class="text-2xl font-semibold text-indigo-600">${formatNumber(forSale)}</p>
+          <p class="text-gray-600 text-xs">For Sale</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-4 text-center mb-6">
+        <div>
+          <p class="text-2xl font-semibold text-indigo-600">${formatNumber(strListings)}</p>
+          <p class="text-gray-600 text-xs">STR Listings</p>
+        </div>
+        <div>
+          <p class="text-2xl font-semibold text-indigo-600">${submarkets}</p>
+          <p class="text-gray-600 text-xs">Submarkets</p>
+        </div>
+        <div>
+          <p class="text-2xl font-semibold text-indigo-600">${formatNumber(forSale)}</p>
+          <p class="text-gray-600 text-xs">For Sale</p>
+        </div>
+      </div>
+    `;
+    document.getElementById('info-modal').classList.remove('hidden');
+  }
+
+  // Function to close modal
+  function closeModal() {
+    document.getElementById('info-modal').classList.add('hidden');
+  }
+</script>
+</body>
+</html>

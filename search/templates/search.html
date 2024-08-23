@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Property List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .column-spacing {
+            padding: 0 20px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search');
+            const tableBody = document.getElementById('property-table-body');
+
+            searchInput.addEventListener('input', function() {
+                const query = searchInput.value;
+
+                fetch(`searchForPropertiesUsingZipCode?zipcode=${query}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    tableBody.innerHTML = '';
+                    data.forEach(property => {
+                        const row = document.createElement('tr');
+
+                        const propertyIdCell = document.createElement('td');
+                        const titleCell = document.createElement('td');
+                        const ratingCell = document.createElement('td');
+                        const propertyAddressCell = document.createElement('td');
+                        const airbnbHostNameCell = document.createElement('td');
+                        const airbnbHostRatingCell = document.createElement('td');
+                        const vrboHostNameCell = document.createElement('td');
+
+                        propertyIdCell.textContent = property.property_id || 'N/A';
+                        titleCell.textContent = property.title || 'N/A';
+                        ratingCell.textContent = property.rating || 'N/A';
+                        propertyAddressCell.textContent = property.address || 'N/A';
+                        airbnbHostNameCell.textContent = property.airbnbHostName || 'N/A';
+                        airbnbHostRatingCell.textContent = property.airbnbHostRating || 'N/A';
+                        vrboHostNameCell.textContent = property.vrboHostName || 'N/A';
+
+                        row.appendChild(propertyIdCell);
+                        row.appendChild(titleCell);
+                        row.appendChild(ratingCell);
+                        row.appendChild(propertyAddressCell);
+                        row.appendChild(airbnbHostNameCell);
+                        row.appendChild(airbnbHostRatingCell);
+                        row.appendChild(vrboHostNameCell);
+
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Property List</h1>
+    <input type="text" id="search" placeholder="Search...">
+    <table id="property-table">
+        <thead>
+            <tr>
+                <th>Property ID</th>
+                <th>Title</th>
+                <th>Rating</th>
+                <th>Property Address</th>
+                <th>Airbnb Host Name</th>
+                <th>Airbnb Host Rating</th>
+                <th>Vrbo Host Name</th>
+            </tr>
+        </thead>
+        <tbody id="property-table-body">
+            <!-- Initial properties can be rendered here if needed -->
+        </tbody>
+    </table>
+</body>
+</html>
